@@ -9,6 +9,9 @@ class WKWebView extends React.Component {
 
 WKWebView.propTypes = {
   url: React.PropTypes.string,
+  baseURL: React.PropTypes.string,
+  html: React.PropTypes.string,
+  
   automaticallyAdjustContentInsets: React.PropTypes.bool,
   contentInset: React.PropTypes.shape({
     top: React.PropTypes.number,
