@@ -3,9 +3,9 @@
 #import "AQWebView.h"
 
 #import "RCTBridge.h"
-#import "RCTSparseArray.h"
 #import "RCTUIManager.h"
 #import "RCTWebView.h"
+#import "UIView+React.h"
 
 @implementation AQWebViewManager
 
@@ -22,14 +22,14 @@ RCT_EXPORT_VIEW_PROPERTY(automaticallyAdjustContentInsets, BOOL);
 
 RCT_EXPORT_METHOD(reload:(nonnull NSNumber *)reactTag)
 {
-    [self.bridge.uiManager addUIBlock:^(__unused RCTUIManager *uiManager, RCTSparseArray *viewRegistry) {
-        AQWebView *view = viewRegistry[reactTag];
-        if (![view isKindOfClass:[AQWebView class]]) {
-            RCTLogError(@"Invalid view returned from registry, expecting RCTWebView, got: %@", view);
-        } else {
-            [view reload];
-        }
-    }];
+  [self.bridge.uiManager addUIBlock:^(__unused RCTUIManager *uiManager, NSDictionary<NSNumber *, AQWebView *> *viewRegistry) {
+    AQWebView *view = viewRegistry[reactTag];
+    if (![view isKindOfClass:[AQWebView class]]) {
+      RCTLogError(@"Invalid view returned from registry, expecting RCTWebView, got: %@", view);
+    } else {
+      [view reload];
+    }
+  }];
 }
 
 @end
