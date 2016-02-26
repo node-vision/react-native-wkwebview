@@ -6,6 +6,9 @@
 // lots of code from https://github.com/facebook/react-native/blob/master/React/Views/RCTWebView.m
 
 @interface AQWebView () <RCTAutoInsetsProtocol, WKNavigationDelegate>
+@property (nonatomic, copy) RCTDirectEventBlock onLoadingStart;
+@property (nonatomic, copy) RCTDirectEventBlock onLoadingFinish;
+@property (nonatomic, copy) RCTDirectEventBlock onLoadingError;
 @end
 
 @implementation AQWebView
@@ -109,12 +112,56 @@
                       updateOffset:YES];
 }
 
+- (NSMutableDictionary<NSString *, id> *)baseEvent
+{
+  NSMutableDictionary<NSString *, id> *event = [[NSMutableDictionary alloc] initWithDictionary:
+    @{
+      @"url": [_webView.URL absoluteString] ?: @"",
+      @"loading" : @(_webView.loading),
+      @"title": [_webView title] ?: @"",
+      @"canGoBack": @(_webView.canGoBack),
+      @"canGoForward" : @(_webView.canGoForward),
+    }
+  ];
+  
+  return event;
+}
+
 #pragma mark - WKNavigationDelegate
 
 -(void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation
 {
   [_spinner stopAnimating];
   [_refreshControl endRefreshing];
+
+  if (_onLoadingFinish) {
+    NSMutableDictionary<NSString *, id> *event = [self baseEvent];
+    _onLoadingFinish(event);
+  }
+}
+
+- (void)webView:(WKWebView *)webView didStartProvisionalNavigation:(WKNavigation *)navigation
+{
+  if (_onLoadingStart) {
+    NSMutableDictionary<NSString *, id> *event = [self baseEvent];
+    _onLoadingStart(event);
+  }
+}
+
+-(void)webView:(WKWebView *)webView didFailProvisionalNavigation:(null_unspecified WKNavigation *)navigation withError:(nonnull NSError *)error
+{
+  [_spinner stopAnimating];
+  [_refreshControl endRefreshing];
+
+  if (_onLoadingError) {
+    NSMutableDictionary<NSString *, id> *event = [self baseEvent];
+    [event addEntriesFromDictionary:@{
+                                      @"domain": error.domain,
+                                      @"code": @(error.code),
+                                      @"description": error.localizedDescription,
+                                    }];
+    _onLoadingError(event);
+  }
 }
 
 @end
