@@ -36,9 +36,11 @@
     [_spinner startAnimating];
     [_webView addSubview:_spinner];
 
+    /*
     _refreshControl = [[UIRefreshControl alloc] init];
     [_webView.scrollView addSubview:_refreshControl];
     [_refreshControl addTarget:self action:@selector(reload) forControlEvents:UIControlEventValueChanged];
+     */
 
     [_webView addConstraint:[NSLayoutConstraint constraintWithItem:_spinner
                                                          attribute:NSLayoutAttributeCenterX
