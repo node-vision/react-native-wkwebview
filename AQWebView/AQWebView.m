@@ -10,6 +10,8 @@
 @property (nonatomic, copy) RCTDirectEventBlock onLoadingStart;
 @property (nonatomic, copy) RCTDirectEventBlock onLoadingFinish;
 @property (nonatomic, copy) RCTDirectEventBlock onLoadingError;
+@property (nonatomic, copy) RCTDirectEventBlock onPrefixBlocked;
+
 @end
 
 @implementation AQWebView
@@ -146,6 +148,35 @@
 }
 
 #pragma mark - WKNavigationDelegate
+
+- (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
+{
+  NSURL *url = navigationAction.request.URL;
+  NSString *urlStr = [url absoluteString];
+  BOOL block = false;
+
+  if ([urlStr isEqual: @""]) {
+    urlStr = @"about:blank";
+  }
+
+  for (id prefix in _blockedPrefixes) {
+    if ([urlStr hasPrefix:prefix]) {
+      NSMutableDictionary<NSString *, id> *event = [[NSMutableDictionary alloc] initWithDictionary:
+                                                    @{
+                                                      @"url": urlStr,
+                                                      }
+                                                    ];
+      _onPrefixBlocked(event);
+      decisionHandler(WKNavigationActionPolicyCancel);
+      block = true;
+      break;
+    }
+  }
+
+  if (!block) {
+    decisionHandler(WKNavigationActionPolicyAllow);
+  }
+}
 
 -(void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation
 {

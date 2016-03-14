@@ -5,6 +5,7 @@
 @property (nonatomic, assign) UIEdgeInsets contentInset;
 @property (nonatomic, assign) BOOL automaticallyAdjustContentInsets;
 @property (nonatomic, copy) NSDictionary *source;
+@property (nonatomic, copy) NSArray<NSString*> *blockedPrefixes;
 
 - (void)reload;
 

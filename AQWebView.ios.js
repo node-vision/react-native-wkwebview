@@ -35,6 +35,9 @@ WKWebView.propTypes = {
     bottom: PropTypes.number,
     right: PropTypes.number
   }),
+
+  blockedPrefixes: PropTypes.arrayOf(PropTypes.string),
+  onPrefixBlocked: PropTypes.func,
 };
 
 var AQWebView = requireNativeComponent('AQWebView', WKWebView);
