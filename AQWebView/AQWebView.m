@@ -2,6 +2,7 @@
 #import <UIKit/UIKit.h>
 #import "AQWebView.h"
 #import "RCTAutoInsetsProtocol.h"
+#import "RCTConvert.h"
 
 // lots of code from https://github.com/facebook/react-native/blob/master/React/Views/RCTWebView.m
 
@@ -66,19 +67,34 @@
   [_webView loadRequest:[NSURLRequest requestWithURL:_webView.URL]];
 }
 
-- (NSURL *)URL
+- (void)setSource:(NSDictionary *)source
 {
-  return _webView.URL;
-}
-
-- (void)setURL:(NSURL *)URL
-{
-  [_webView loadRequest:[NSURLRequest requestWithURL:URL]];
-}
-
-- (void)setHtml:(NSString *)html
-{
-  [_webView loadHTMLString:html baseURL:[NSURL URLWithString:_baseURL]];
+  if (![_source isEqualToDictionary:source]) {
+    _source = [source copy];
+    
+    // Check for a static html source first
+    NSString *html = [RCTConvert NSString:source[@"html"]];
+    if (html) {
+      NSURL *baseURL = [RCTConvert NSURL:source[@"baseUrl"]];
+      [_webView loadHTMLString:html baseURL:baseURL];
+      return;
+    }
+    
+    NSURLRequest *request = [RCTConvert NSURLRequest:source];
+    // Because of the way React works, as pages redirect, we actually end up
+    // passing the redirect urls back here, so we ignore them if trying to load
+    // the same url. We'll expose a call to 'reload' to allow a user to load
+    // the existing page.
+    if ([request.URL isEqual:_webView.URL]) {
+      return;
+    }
+    if (!request.URL) {
+      // Clear the webview
+      [_webView loadHTMLString:@"" baseURL:nil];
+      return;
+    }
+    [_webView loadRequest:request];
+  }
 }
 
 - (void)layoutSubviews

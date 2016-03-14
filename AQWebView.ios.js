@@ -1,5 +1,8 @@
 var React = require('react-native');
-var { requireNativeComponent } = React;
+var {
+  requireNativeComponent,
+  PropTypes
+} = React;
 
 class WKWebView extends React.Component {
   render() {
@@ -8,20 +11,29 @@ class WKWebView extends React.Component {
 }
 
 WKWebView.propTypes = {
-  url: React.PropTypes.string,
-  baseURL: React.PropTypes.string,
-  html: React.PropTypes.string,
+  source: PropTypes.oneOfType([
+    PropTypes.shape({
+      uri: PropTypes.string,
+      method: PropTypes.string,
+      headers: PropTypes.object,
+      body: PropTypes.string,
+    }),
+    PropTypes.shape({
+      html: PropTypes.string,
+      baseUrl: PropTypes.string,
+    }),
+  ]),
 
-  onLoadingStart: React.PropTypes.func,
-  onLoadingFinish: React.PropTypes.func,
-  onLoadingError: React.PropTypes.func,
+  onLoadingStart: PropTypes.func,
+  onLoadingFinish: PropTypes.func,
+  onLoadingError: PropTypes.func,
 
-  automaticallyAdjustContentInsets: React.PropTypes.bool,
-  contentInset: React.PropTypes.shape({
-    top: React.PropTypes.number,
-    left: React.PropTypes.number,
-    bottom: React.PropTypes.number,
-    right: React.PropTypes.number
+  automaticallyAdjustContentInsets: PropTypes.bool,
+  contentInset: PropTypes.shape({
+    top: PropTypes.number,
+    left: PropTypes.number,
+    bottom: PropTypes.number,
+    right: PropTypes.number
   }),
 };
 
