@@ -11,7 +11,7 @@
 @property (nonatomic, copy) RCTDirectEventBlock onLoadingFinish;
 @property (nonatomic, copy) RCTDirectEventBlock onLoadingError;
 @property (nonatomic, copy) RCTDirectEventBlock onPrefixBlocked;
-
+@property (nonatomic, strong) NSString *userLoadedUrl;
 @end
 
 @implementation AQWebView
@@ -78,6 +78,7 @@
     NSString *html = [RCTConvert NSString:source[@"html"]];
     if (html) {
       NSURL *baseURL = [RCTConvert NSURL:source[@"baseUrl"]];
+      _userLoadedUrl = [baseURL absoluteString];
       [_webView loadHTMLString:html baseURL:baseURL];
       return;
     }
@@ -95,6 +96,7 @@
       [_webView loadHTMLString:@"" baseURL:nil];
       return;
     }
+    _userLoadedUrl = [request.URL absoluteString];
     [_webView loadRequest:request];
   }
 }
@@ -159,17 +161,19 @@
     urlStr = @"about:blank";
   }
 
-  for (id prefix in _blockedPrefixes) {
-    if ([urlStr hasPrefix:prefix]) {
-      NSMutableDictionary<NSString *, id> *event = [[NSMutableDictionary alloc] initWithDictionary:
-                                                    @{
-                                                      @"url": urlStr,
-                                                      }
-                                                    ];
-      _onPrefixBlocked(event);
-      decisionHandler(WKNavigationActionPolicyCancel);
-      block = true;
-      break;
+  if (![urlStr isEqual: _userLoadedUrl]) {
+    for (id prefix in _blockedPrefixes) {
+      if ([urlStr hasPrefix:prefix]) {
+        NSMutableDictionary<NSString *, id> *event = [[NSMutableDictionary alloc] initWithDictionary:
+                                                      @{
+                                                        @"url": urlStr,
+                                                        }
+                                                      ];
+        _onPrefixBlocked(event);
+        decisionHandler(WKNavigationActionPolicyCancel);
+        block = true;
+        break;
+      }
     }
   }
 
