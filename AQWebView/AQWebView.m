@@ -30,7 +30,10 @@
 
     _webView = [[WKWebView alloc] initWithFrame:self.bounds];
     _webView.allowsBackForwardNavigationGestures = YES;
-    _webView.allowsLinkPreview = YES;
+    
+    // Disabled because it feels less like an app if you can preview links
+    //_webView.allowsLinkPreview = YES;
+    
     _webView.navigationDelegate = self;
     [self addSubview:_webView];
 
