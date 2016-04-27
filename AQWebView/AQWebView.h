@@ -10,7 +10,5 @@
 - (void)reload;
 - (void)goBack;
 - (void)goForward;
-- (BOOL)canGoBack;
-- (BOOL)canGoForward;
 
 @end

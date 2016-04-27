@@ -27,30 +27,13 @@ RCT_EXPORT_VIEW_PROPERTY(onPrefixBlocked, RCTDirectEventBlock)
 
 RCT_EXPORT_METHOD(reload:(nonnull NSNumber *)reactTag)
 {
-  [self.bridge.uiManager addUIBlock:^(__unused RCTUIManager *uiManager, NSDictionary<NSNumber *, AQWebView *> *viewRegistry) {
-    AQWebView *view = viewRegistry[reactTag];
-    if (![view isKindOfClass:[AQWebView class]]) {
-      RCTLogError(@"Invalid view returned from registry, expecting RCTWebView, got: %@", view);
-    }
-    else {
-      [view reload];
-    }
-  }];
-}
-
-RCT_EXPORT_METHOD(navigationState:(nonnull NSNumber *)reactTag callback:(RCTResponseSenderBlock)callback)
-{
     [self.bridge.uiManager addUIBlock:^(__unused RCTUIManager *uiManager, NSDictionary<NSNumber *, AQWebView *> *viewRegistry) {
         AQWebView *view = viewRegistry[reactTag];
         if (![view isKindOfClass:[AQWebView class]]) {
             RCTLogError(@"Invalid view returned from registry, expecting RCTWebView, got: %@", view);
         }
         else {
-            BOOL canGoForward = [view canGoForward];
-            BOOL canGoBack = [view canGoBack];
-            NSDictionary *data = @{@"canGoForward": @(canGoForward),
-                                   @"canGoBack": @(canGoBack)};
-            callback(@[[NSNull null], data]);
+            [view reload];
         }
     }];
 }
