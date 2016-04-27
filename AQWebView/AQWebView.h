@@ -8,5 +8,9 @@
 @property (nonatomic, copy) NSArray<NSString*> *blockedPrefixes;
 
 - (void)reload;
+- (void)goBack;
+- (void)goForward;
+- (BOOL)canGoBack;
+- (BOOL)canGoForward;
 
 @end

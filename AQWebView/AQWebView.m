@@ -72,6 +72,26 @@
   [_webView loadRequest:[NSURLRequest requestWithURL:_webView.URL]];
 }
 
+- (void)goBack
+{
+    [_webView goBack];
+}
+
+- (void)goForward
+{
+    [_webView goForward];
+}
+
+- (BOOL)canGoBack
+{
+    return [_webView canGoBack];
+}
+
+- (BOOL)canGoForward
+{
+    return [_webView canGoForward];
+}
+
 - (void)setSource:(NSDictionary *)source
 {
   if (![_source isEqualToDictionary:source]) {

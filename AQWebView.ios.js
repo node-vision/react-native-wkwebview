@@ -5,9 +5,27 @@ var {
 } = React;
 
 class WKWebView extends React.Component {
-  render() {
-    return <AQWebView {...this.props} />;
+
+  goBack() {
+    this.refs.AQWebView.goBack();	  
   }
+
+  goForward() {
+    this.refs.AQWebView.goForward();
+  }
+
+  canGoForward() {
+    this.refs.AQWebView.canGoForward();
+  }
+
+  canGoBack() {
+    this.refs.AQWebView.canGoBack();
+  }
+
+  render() {
+    return <AQWebView ref="AQWebView" {...this.props} />;
+  }
+
 }
 
 WKWebView.propTypes = {
