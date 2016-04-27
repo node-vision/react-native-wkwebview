@@ -1,29 +1,45 @@
 var React = require('react-native');
 var {
   requireNativeComponent,
-  PropTypes
+  PropTypes,
+  NativeModules
 } = React;
 
 class WKWebView extends React.Component {
 
   goBack() {
-    this.refs.AQWebView.goBack();	  
+    NativeModules.AQWebViewManager.goBack(React.findNodeHandle(this.refs.AQWebView);
   }
 
   goForward() {
-    this.refs.AQWebView.goForward();
+    NativeModules.AQWebViewManager.goForward(React.findNodeHandle(this.refs.AQWebView);
   }
 
-  canGoForward() {
-    this.refs.AQWebView.canGoForward();
+  _onLoadingStart(navState) {
+    if (this.props.onNavigationStateChange) {
+      this.props.onNavigationStateChange({type: 'start', ...navState.nativeEvent});
+    }
   }
 
-  canGoBack() {
-    this.refs.AQWebView.canGoBack();
+  _onLoadingEnd(navState) {
+    if (this.props.onNavigationStateChange) {
+      this.props.onNavigationStateChange({type: 'end', ...navState.nativeEvent});
+    }
+  }
+  
+  _onLoadingError(navState) {
+    if (this.props.onNavigationStateChange) {
+      this.props.onNavigationStateChange({type: 'error', ...navState.nativeEvent});
+    }
   }
 
   render() {
-    return <AQWebView ref="AQWebView" {...this.props} />;
+    return <AQWebView ref="AQWebView" 
+                      {...this.props} 
+                      onLoadingStart={this._onLoadingStart.bind(this)}
+		      onLoadingEnd={this._onLoadingEnd.bind(this)}
+		      onLoadingError={this._onLoadingError.bind(this)}
+	    />;
   }
 
 }
@@ -42,9 +58,7 @@ WKWebView.propTypes = {
     }),
   ]),
 
-  onLoadingStart: PropTypes.func,
-  onLoadingFinish: PropTypes.func,
-  onLoadingError: PropTypes.func,
+  onNavigationStateChange: PropTypes.func,
 
   automaticallyAdjustContentInsets: PropTypes.bool,
   contentInset: PropTypes.shape({
