@@ -84,12 +84,12 @@
 
 - (BOOL)canGoBack
 {
-    return [_webView canGoBack];
+    return _webView.canGoBack;
 }
 
 - (BOOL)canGoForward
 {
-    return [_webView canGoForward];
+    return _webView.canGoForward;
 }
 
 - (void)setSource:(NSDictionary *)source
