@@ -5,14 +5,16 @@ var {
   NativeModules
 } = React;
 
+var AQWebView = requireNativeComponent('AQWebView', WKWebView);
+
 class WKWebView extends React.Component {
 
   goBack() {
-    NativeModules.AQWebViewManager.goBack(React.findNodeHandle(this.refs.AQWebView);
+    NativeModules.AQWebViewManager.goBack(React.findNodeHandle(this.refs.AQWebView));
   }
 
   goForward() {
-    NativeModules.AQWebViewManager.goForward(React.findNodeHandle(this.refs.AQWebView);
+    NativeModules.AQWebViewManager.goForward(React.findNodeHandle(this.refs.AQWebView));
   }
 
   _onLoadingStart(navState) {
@@ -26,7 +28,7 @@ class WKWebView extends React.Component {
       this.props.onNavigationStateChange({type: 'end', ...navState.nativeEvent});
     }
   }
-  
+
   _onLoadingError(navState) {
     if (this.props.onNavigationStateChange) {
       this.props.onNavigationStateChange({type: 'error', ...navState.nativeEvent});
@@ -34,12 +36,12 @@ class WKWebView extends React.Component {
   }
 
   render() {
-    return <AQWebView ref="AQWebView" 
-                      {...this.props} 
+    return <AQWebView ref="AQWebView"
+                      {...this.props}
                       onLoadingStart={this._onLoadingStart.bind(this)}
-		      onLoadingEnd={this._onLoadingEnd.bind(this)}
-		      onLoadingError={this._onLoadingError.bind(this)}
-	    />;
+                      onLoadingFinish={this._onLoadingEnd.bind(this)}
+                      onLoadingError={this._onLoadingError.bind(this)}
+           />;
   }
 
 }
@@ -50,16 +52,14 @@ WKWebView.propTypes = {
       uri: PropTypes.string,
       method: PropTypes.string,
       headers: PropTypes.object,
-      body: PropTypes.string,
+      body: PropTypes.string
     }),
     PropTypes.shape({
       html: PropTypes.string,
-      baseUrl: PropTypes.string,
-    }),
+      baseUrl: PropTypes.string
+    })
   ]),
-
   onNavigationStateChange: PropTypes.func,
-
   automaticallyAdjustContentInsets: PropTypes.bool,
   contentInset: PropTypes.shape({
     top: PropTypes.number,
@@ -67,11 +67,8 @@ WKWebView.propTypes = {
     bottom: PropTypes.number,
     right: PropTypes.number
   }),
-
   blockedPrefixes: PropTypes.arrayOf(PropTypes.string),
-  onPrefixBlocked: PropTypes.func,
+  onPrefixBlocked: PropTypes.func
 };
-
-var AQWebView = requireNativeComponent('AQWebView', WKWebView);
 
 module.exports = WKWebView;
