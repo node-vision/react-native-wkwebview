@@ -208,6 +208,7 @@
 
 - (void)webView:(WKWebView *)webView didStartProvisionalNavigation:(WKNavigation *)navigation
 {
+    [_spinner startAnimating];	
     if (_onLoadingStart) {
         NSMutableDictionary<NSString *, id> *event = [self baseEvent];
         _onLoadingStart(event);
