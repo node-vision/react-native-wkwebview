@@ -10,5 +10,6 @@
 - (void)reload;
 - (void)goBack;
 - (void)goForward;
+- (NSMutableDictionary<NSString *, id> *)baseEvent;
 
 @end

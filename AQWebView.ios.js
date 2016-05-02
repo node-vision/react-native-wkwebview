@@ -17,6 +17,17 @@ class WKWebView extends React.Component {
     NativeModules.AQWebViewManager.goForward(React.findNodeHandle(this.refs.AQWebView));
   }
 
+  getNavigationState(callback) {
+    NativeModules.AQWebViewManager.baseEvent(React.findNodeHandle(this.refs.AQWebView), (err, res) => {
+      if (err) {
+        callback('Getting navigation state from webview error: ' + err)
+      }
+      else {
+        callback(null, res)
+      }
+    })
+  }
+
   _onLoadingStart(navState) {
     if (this.props.onNavigationStateChange) {
       this.props.onNavigationStateChange({type: 'start', ...navState.nativeEvent});

@@ -50,6 +50,7 @@ RCT_EXPORT_METHOD(goBack:(nonnull NSNumber *)reactTag)
         }
     }];
 }
+
 RCT_EXPORT_METHOD(goForward:(nonnull NSNumber *)reactTag)
 {
     [self.bridge.uiManager addUIBlock:^(__unused RCTUIManager *uiManager, NSDictionary<NSNumber *, AQWebView *> *viewRegistry) {
@@ -59,6 +60,21 @@ RCT_EXPORT_METHOD(goForward:(nonnull NSNumber *)reactTag)
         }
         else {
             [view goForward];
+        }
+    }];
+}
+
+RCT_EXPORT_METHOD(baseEvent:(nonnull NSNumber *)reactTag callback:(RCTResponseSenderBlock)callback)
+{
+    [self.bridge.uiManager addUIBlock:^(__unused RCTUIManager *uiManager, NSDictionary<NSNumber *, AQWebView *> *viewRegistry) {
+        AQWebView *view = viewRegistry[reactTag];
+        if (![view isKindOfClass:[AQWebView class]]) {
+            RCTLogError(@"Invalid view returned from registry, expecting RCTWebView, got: %@", view);
+            _callback(@[@"Invalid view returned from registry, expecting RCTWebView", [NSNull null]]);
+        }
+        else {
+            NSMutableDictionary<NSString *, id> *event = [view baseEvent];
+            callback(@[[NSNull null], event]);
         }
     }];
 }
