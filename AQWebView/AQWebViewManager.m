@@ -70,7 +70,7 @@ RCT_EXPORT_METHOD(baseEvent:(nonnull NSNumber *)reactTag callback:(RCTResponseSe
         AQWebView *view = viewRegistry[reactTag];
         if (![view isKindOfClass:[AQWebView class]]) {
             RCTLogError(@"Invalid view returned from registry, expecting RCTWebView, got: %@", view);
-            _callback(@[@"Invalid view returned from registry, expecting RCTWebView", [NSNull null]]);
+            callback(@[@"Invalid view returned from registry, expecting RCTWebView", [NSNull null]]);
         }
         else {
             NSMutableDictionary<NSString *, id> *event = [view baseEvent];
