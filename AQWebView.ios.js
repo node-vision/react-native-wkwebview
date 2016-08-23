@@ -1,9 +1,12 @@
-var React = require('react-native');
+var React = require('react');
+var {
+  PropTypes,
+} = React;
+var ReactNative = require('react-native');
 var {
   requireNativeComponent,
-  PropTypes,
   NativeModules
-} = React;
+} = ReactNative;
 
 var AQWebView = requireNativeComponent('AQWebView', WKWebView);
 
